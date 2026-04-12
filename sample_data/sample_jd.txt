@@ -1,0 +1,52 @@
+Senior Machine Learning Engineer
+Company: AI Innovations Inc.
+Location: San Francisco, CA (Hybrid)
+Salary: $150,000 - $200,000
+
+ABOUT THE ROLE:
+We are looking for a Senior Machine Learning Engineer to join our
+AI Platform team. You will design, build, and deploy ML systems
+that power our core product features serving millions of users.
+
+REQUIREMENTS (Must Have):
+- 4+ years of professional experience in Machine Learning or Data Science
+- Strong proficiency in Python (primary language)
+- Hands-on experience with TensorFlow or PyTorch
+- Experience with scikit-learn, XGBoost, or LightGBM
+- Knowledge of NLP techniques and libraries (spaCy, NLTK, Transformers)
+- Experience with REST API development (FastAPI or Flask)
+- Proficiency in SQL and working with relational databases (PostgreSQL, MySQL)
+- Experience with Docker and Kubernetes for containerization
+- Familiarity with cloud platforms (AWS, GCP, or Azure)
+- Experience with version control using Git and GitHub
+- Strong understanding of ML fundamentals: regression, classification,
+  clustering, neural networks, feature engineering
+
+NICE TO HAVE:
+- Experience with Apache Spark for big data processing
+- Knowledge of MLflow or similar experiment tracking tools
+- React or TypeScript for frontend integration
+- Experience with Kafka or streaming data pipelines
+- Computer vision experience with OpenCV
+- AWS Certified Machine Learning certification
+
+RESPONSIBILITIES:
+- Design and implement ML models for production systems
+- Build and maintain scalable ML pipelines and data workflows
+- Collaborate with data scientists, engineers, and product managers
+- Deploy models using Docker, Kubernetes, and AWS
+- Conduct A/B testing and monitor model performance
+- Mentor junior engineers and contribute to technical decisions
+- Write clean, well-documented Python code
+- Participate in Agile/Scrum ceremonies and code reviews
+
+REQUIRED EDUCATION:
+- Bachelor's degree in Computer Science, Statistics, or related field
+- Master's degree preferred
+
+WE OFFER:
+- Competitive salary and equity package
+- Health, dental, vision insurance
+- Flexible remote work options
+- Learning & development budget
+- Collaborative and innovative team culture

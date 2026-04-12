@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ResumeIQ — AI Resume Screener</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     DESIGN SYSTEM — CSS Variables
+     ============================================================ */
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #16161f;
+    --surface: #1c1c28;
+    --surface2: #22222f;
+    --border: rgba(255,255,255,0.07);
+    --border-bright: rgba(255,255,255,0.14);
+
+    --accent: #7c6dfa;
+    --accent2: #a78bfa;
+    --accent-glow: rgba(124, 109, 250, 0.3);
+    --green: #34d399;
+    --green-dim: rgba(52, 211, 153, 0.15);
+    --amber: #fbbf24;
+    --amber-dim: rgba(251, 191, 36, 0.15);
+    --red: #f87171;
+    --red-dim: rgba(248, 113, 113, 0.12);
+    --blue: #60a5fa;
+
+    --text: #e8e8f0;
+    --text-muted: #6b6b80;
+    --text-dim: #9898b0;
+
+    --font-display: 'Syne', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --font-body: 'Inter', sans-serif;
+
+    --radius: 12px;
+    --radius-lg: 20px;
+    --radius-sm: 8px;
+    --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ---- Grid background ---- */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(124, 109, 250, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124, 109, 250, 0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ============================================================
+     HEADER
+     ============================================================ */
+  header {
+    position: relative;
+    z-index: 10;
+    padding: 0 40px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10, 10, 15, 0.9);
+    backdrop-filter: blur(20px);
+    position: sticky;
+    top: 0;
+  }
+
+  .logo {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  .logo span { color: var(--accent2); }
+
+  .logo-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    background: var(--accent-glow);
+    border: 1px solid var(--accent);
+    color: var(--accent2);
+    padding: 2px 8px;
+    border-radius: 100px;
+    margin-left: 10px;
+    letter-spacing: 1px;
+  }
+
+  .header-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* ============================================================
+     LAYOUT
+     ============================================================ */
+  .layout {
+    position: relative;
+    z-index: 1;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 40px 40px 80px;
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+
+  /* ============================================================
+     HERO SECTION (spans full width above the grid)
+     ============================================================ */
+  .hero {
+    position: relative;
+    z-index: 1;
+    max-width: 1280px;
+    margin: 60px auto 0;
+    padding: 0 40px;
+    text-align: center;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    background: var(--accent-glow);
+    border: 1px solid rgba(124, 109, 250, 0.3);
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #fff 30%, var(--accent2) 70%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: 16px;
+    color: var(--text-dim);
+    max-width: 540px;
+    margin: 0 auto 48px;
+    line-height: 1.7;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    margin-bottom: 60px;
+  }
+
+  .stat-item { text-align: center; }
+
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent2);
+    letter-spacing: -1px;
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+  }
+
+  /* ============================================================
+     PANELS
+     ============================================================ */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .panel-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: var(--accent-glow);
+    border: 1px solid rgba(124,109,250,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .panel-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: -0.3px;
+  }
+
+  .panel-subtitle {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    margin-left: auto;
+  }
+
+  .panel-body { padding: 24px; }
+
+  /* ============================================================
+     UPLOAD ZONE
+     ============================================================ */
+  .drop-zone {
+    border: 2px dashed var(--border-bright);
+    border-radius: var(--radius);
+    padding: 40px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    background: var(--bg2);
+    position: relative;
+  }
+
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: var(--accent);
+    background: var(--accent-glow);
+  }
+
+  .drop-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+
+  .drop-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+    display: block;
+    filter: grayscale(0.3);
+  }
+
+  .drop-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+
+  .drop-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  /* ============================================================
+     FILE LIST
+     ============================================================ */
+  .file-list { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+
+  .file-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+  }
+
+  .file-item.uploading { border-color: var(--amber); }
+  .file-item.done { border-color: rgba(52,211,153,0.3); }
+  .file-item.error { border-color: rgba(248,113,113,0.3); }
+
+  .file-icon { font-size: 18px; flex-shrink: 0; }
+
+  .file-info { flex: 1; min-width: 0; }
+
+  .file-name {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .file-status {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    margin-top: 2px;
+  }
+
+  .file-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-family: var(--font-mono);
+    flex-shrink: 0;
+  }
+
+  .file-badge.uploading { background: var(--amber-dim); color: var(--amber); }
+  .file-badge.done { background: var(--green-dim); color: var(--green); }
+  .file-badge.error { background: var(--red-dim); color: var(--red); }
+
+  /* ============================================================
+     JOB DESCRIPTION
+     ============================================================ */
+  .jd-textarea {
+    width: 100%;
+    min-height: 180px;
+    background: var(--bg2);
+    border: 1px solid var(--border-bright);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 16px;
+    resize: vertical;
+    transition: var(--transition);
+    outline: none;
+  }
+
+  .jd-textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+
+  .jd-textarea::placeholder { color: var(--text-muted); }
+
+  /* ============================================================
+     BUTTONS
+     ============================================================ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: -0.2px;
+    transition: var(--transition);
+    white-space: nowrap;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: var(--accent2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 24px var(--accent-glow);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--border-bright);
+  }
+
+  .btn-ghost:hover { background: var(--surface2); color: var(--text); }
+
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  .btn-full { width: 100%; }
+
+  /* ============================================================
+     SPINNER / LOADING
+     ============================================================ */
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+
+  .loading .spinner { display: block; }
+  .loading .btn-text { display: none; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ============================================================
+     RESULTS SECTION
+     ============================================================ */
+  .results-panel { grid-column: 1 / -1; }
+
+  .results-placeholder {
+    text-align: center;
+    padding: 80px 24px;
+    color: var(--text-muted);
+  }
+
+  .results-placeholder .big-icon {
+    font-size: 64px;
+    display: block;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+
+  .results-placeholder p {
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+
+  /* ---- Summary Bar ---- */
+  .results-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .summary-stat {
+    background: var(--surface);
+    padding: 20px 24px;
+    text-align: center;
+  }
+
+  .summary-num {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: var(--accent2);
+  }
+
+  .summary-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    margin-top: 4px;
+  }
+
+  /* ---- Candidate Cards ---- */
+  .candidates-grid {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .candidate-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: var(--transition);
+    cursor: pointer;
+  }
+
+  .candidate-card:hover { border-color: var(--border-bright); }
+
+  .candidate-card.rank-1 { border-color: rgba(251,191,36,0.3); }
+  .candidate-card.rank-2 { border-color: rgba(167,139,250,0.2); }
+
+  .candidate-main {
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    gap: 16px;
+    align-items: center;
+    padding: 20px 24px;
+  }
+
+  .rank-badge {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .rank-badge.r1 { background: rgba(251,191,36,0.15); color: var(--amber); border: 1px solid rgba(251,191,36,0.3); }
+  .rank-badge.r2 { background: rgba(167,139,250,0.12); color: var(--accent2); border: 1px solid rgba(167,139,250,0.25); }
+  .rank-badge.r3 { background: rgba(96,165,250,0.12); color: var(--blue); border: 1px solid rgba(96,165,250,0.2); }
+  .rank-badge.rn { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
+
+  .candidate-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+  }
+
+  .candidate-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .match-label {
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 100px;
+    font-family: var(--font-mono);
+  }
+
+  .match-label.excellent { background: var(--green-dim); color: var(--green); }
+  .match-label.good { background: rgba(96,165,250,0.12); color: var(--blue); }
+  .match-label.partial { background: var(--amber-dim); color: var(--amber); }
+  .match-label.low { background: var(--red-dim); color: var(--red); }
+
+  .skill-count-badge {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  /* ---- Score Display ---- */
+  .score-block { text-align: right; flex-shrink: 0; }
+
+  .score-pct {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 28px;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  .score-pct.high { color: var(--green); }
+  .score-pct.med  { color: var(--blue); }
+  .score-pct.low-score  { color: var(--amber); }
+  .score-pct.poor { color: var(--red); }
+
+  .score-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    margin-top: 2px;
+  }
+
+  /* ---- Progress Bar ---- */
+  .score-bar-wrap {
+    padding: 0 24px 16px;
+  }
+
+  .score-bar-bg {
+    height: 4px;
+    background: var(--surface2);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .score-bar-fill.high { background: linear-gradient(90deg, var(--green), #86efac); }
+  .score-bar-fill.med  { background: linear-gradient(90deg, var(--blue), #93c5fd); }
+  .score-bar-fill.low-score  { background: linear-gradient(90deg, var(--amber), #fcd34d); }
+  .score-bar-fill.poor { background: linear-gradient(90deg, var(--red), #fca5a5); }
+
+  /* ---- Skill Gap Section ---- */
+  .skill-gap-section {
+    border-top: 1px solid var(--border);
+    padding: 20px 24px;
+    display: none;
+  }
+
+  .candidate-card.expanded .skill-gap-section { display: block; }
+
+  .skill-gap-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 12px;
+  }
+
+  .skill-group-title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .skill-group-title.matching { color: var(--green); }
+  .skill-group-title.missing { color: var(--red); }
+  .skill-group-title.extra { color: var(--blue); }
+
+  .skill-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .skill-chip {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    border: 1px solid;
+  }
+
+  .skill-chip.match { background: var(--green-dim); color: var(--green); border-color: rgba(52,211,153,0.25); }
+  .skill-chip.miss  { background: var(--red-dim);   color: var(--red);   border-color: rgba(248,113,113,0.2); }
+  .skill-chip.extra { background: rgba(96,165,250,0.1); color: var(--blue); border-color: rgba(96,165,250,0.2); }
+
+  .gap-match-pct {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+
+  .expand-hint {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    text-align: right;
+    padding: 4px 24px 12px;
+  }
+
+  /* ============================================================
+     TOAST NOTIFICATIONS
+     ============================================================ */
+  #toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+  }
+
+  .toast {
+    background: var(--surface2);
+    border: 1px solid var(--border-bright);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-size: 13px;
+    font-family: var(--font-mono);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: toastIn 0.3s ease;
+    max-width: 320px;
+    pointer-events: all;
+  }
+
+  .toast.success { border-color: rgba(52,211,153,0.4); }
+  .toast.error   { border-color: rgba(248,113,113,0.4); color: var(--red); }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============================================================
+     MISC
+     ============================================================ */
+  .section-divider {
+    margin: 20px 0;
+    border: none;
+    border-top: 1px solid var(--border);
+  }
+
+  .label {
+    display: block;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .info-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+
+  .info-row:last-child { border: none; }
+  .info-row .key { color: var(--text-muted); font-family: var(--font-mono); }
+  .info-row .val { color: var(--text); font-weight: 500; }
+
+  .alert {
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-family: var(--font-mono);
+    margin-top: 12px;
+  }
+
+  .alert.info { background: var(--accent-glow); color: var(--accent2); border: 1px solid rgba(124,109,250,0.3); }
+  .alert.warning { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(251,191,36,0.3); }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; padding: 24px 20px 60px; }
+    .hero { padding: 0 20px; margin-top: 40px; }
+    header { padding: 0 20px; }
+    .hero h1 { font-size: 36px; }
+    .hero-stats { gap: 24px; }
+    .skill-gap-grid { grid-template-columns: 1fr; }
+    .candidate-main { grid-template-columns: 40px 1fr auto; }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- ============================================================
+  HEADER
+============================================================ -->
+<header>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="logo">Resume<span>IQ</span></div>
+    <span class="logo-badge">ML-POWERED</span>
+  </div>
+  <div class="header-status">
+    <div class="status-dot"></div>
+    <span id="header-status-text">API Connected</span>
+  </div>
+</header>
+
+<!-- ============================================================
+  HERO
+============================================================ -->
+<div class="hero">
+  <div class="hero-tag">✦ NLP · TF-IDF · Cosine Similarity</div>
+  <h1>AI-Powered Resume<br>Screening & Ranking</h1>
+  <p>Upload resumes, enter a job description, and let our ML pipeline rank candidates by relevance — with skill gap analysis in seconds.</p>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <span class="stat-num" id="stat-resumes">0</span>
+      <span class="stat-label">Resumes Loaded</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">TF-IDF</span>
+      <span class="stat-label">Vectorizer</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">Cosine</span>
+      <span class="stat-label">Similarity</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">spaCy</span>
+      <span class="stat-label">NLP Engine</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+  MAIN LAYOUT
+============================================================ -->
+<div class="layout">
+
+  <!-- ===== LEFT PANEL: Controls ===== -->
+  <div style="display:flex;flex-direction:column;gap:24px;">
+
+    <!-- Upload Panel -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-icon">📂</div>
+        <div>
+          <div class="panel-title">Upload Resumes</div>
+        </div>
+        <span class="panel-subtitle" id="upload-count">0 files</span>
+      </div>
+      <div class="panel-body">
+        <div class="drop-zone" id="drop-zone">
+          <input type="file" id="file-input" accept=".pdf,.txt" multiple>
+          <span class="drop-icon">📄</span>
+          <div class="drop-title">Drop resumes here</div>
+          <div class="drop-hint">PDF or TXT · Multiple files supported</div>
+        </div>
+
+        <div class="file-list" id="file-list"></div>
+
+        <div style="margin-top:16px;display:flex;gap:8px;">
+          <button class="btn btn-ghost" onclick="loadSampleResume()" style="flex:1;font-size:12px;">
+            🧪 Load Sample
+          </button>
+          <button class="btn btn-ghost" onclick="clearUploads()" style="flex:1;font-size:12px;" id="clear-btn">
+            🗑 Clear All
+          </button>
+        </div>
+
+        <div class="alert info" style="margin-top:16px;">
+          ℹ️ Upload 2–10 resumes for best ranking results
+        </div>
+      </div>
+    </div>
+
+    <!-- Job Description Panel -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-icon">📋</div>
+        <div class="panel-title">Job Description</div>
+      </div>
+      <div class="panel-body">
+        <span class="label">Paste the full job description below</span>
+        <textarea
+          class="jd-textarea"
+          id="jd-input"
+          placeholder="We are looking for a Senior Python Developer with expertise in machine learning...
+
+Include:
+• Required skills & technologies
+• Years of experience
+• Responsibilities
+• Nice-to-have skills
+
+The more detail, the better the matching!"
+        ></textarea>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+          <span class="label" style="margin:0;" id="jd-char-count">0 characters</span>
+          <button class="btn btn-ghost" onclick="loadSampleJD()" style="font-size:11px;padding:6px 12px;">
+            Load Sample JD
+          </button>
+        </div>
+
+        <hr class="section-divider">
+
+        <button class="btn btn-primary btn-full" id="rank-btn" onclick="rankCandidates()">
+          <div class="spinner"></div>
+          <span class="btn-text">⚡ Rank Candidates</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- How It Works Panel -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-icon">🔬</div>
+        <div class="panel-title">How It Works</div>
+      </div>
+      <div class="panel-body" style="padding:16px 24px;">
+        <div class="info-row">
+          <span class="key">1. Parse</span>
+          <span class="val">PDF → Raw Text</span>
+        </div>
+        <div class="info-row">
+          <span class="key">2. Clean</span>
+          <span class="val">Remove noise, stopwords</span>
+        </div>
+        <div class="info-row">
+          <span class="key">3. NLP</span>
+          <span class="val">spaCy lemmatization</span>
+        </div>
+        <div class="info-row">
+          <span class="key">4. Vectorize</span>
+          <span class="val">TF-IDF (1-gram + 2-gram)</span>
+        </div>
+        <div class="info-row">
+          <span class="key">5. Score</span>
+          <span class="val">Cosine similarity</span>
+        </div>
+        <div class="info-row">
+          <span class="key">6. Rank</span>
+          <span class="val">Sort by relevance score</span>
+        </div>
+        <div class="info-row">
+          <span class="key">7. Gap</span>
+          <span class="val">Missing skills report</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== RIGHT PANEL: Results ===== -->
+  <div class="panel results-panel" id="results-panel">
+    <div id="results-placeholder" class="results-placeholder">
+      <span class="big-icon">🎯</span>
+      <p>Upload resumes and enter a job description,<br>then click <strong>Rank Candidates</strong></p>
+      <p style="margin-top:8px;opacity:0.6;">Results will appear here with scores and skill gaps</p>
+    </div>
+
+    <div id="results-content" style="display:none;">
+      <!-- Summary bar injected here -->
+      <div id="results-summary" class="results-summary"></div>
+      <!-- Candidate cards injected here -->
+      <div id="candidates-grid" class="candidates-grid"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast Container -->
+<div id="toast-container"></div>
+
+
+<script>
+// ============================================================
+//  STATE
+// ============================================================
+const state = {
+  uploadedFiles: [],     // Array of {filename, status}
+  rankingDone: false
+};
+
+// ============================================================
+//  API HELPERS
+// ============================================================
+const API = "http://localhost:5000";
+
+async function apiPost(endpoint, body) {
+  const res = await fetch(API + endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  return res.json();
+}
+
+async function apiDelete(endpoint) {
+  const res = await fetch(API + endpoint, { method: "DELETE" });
+  return res.json();
+}
+
+// ============================================================
+//  TOAST NOTIFICATIONS
+// ============================================================
+function showToast(msg, type = "success") {
+  const icon = type === "success" ? "✅" : "❌";
+  const el = document.createElement("div");
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${icon}</span><span>${msg}</span>`;
+  document.getElementById("toast-container").appendChild(el);
+  setTimeout(() => el.remove(), 4000);
+}
+
+// ============================================================
+//  FILE UPLOAD HANDLING
+// ============================================================
+const dropZone = document.getElementById("drop-zone");
+const fileInput = document.getElementById("file-input");
+
+dropZone.addEventListener("dragover", e => {
+  e.preventDefault();
+  dropZone.classList.add("drag-over");
+});
+
+dropZone.addEventListener("dragleave", () => {
+  dropZone.classList.remove("drag-over");
+});
+
+dropZone.addEventListener("drop", e => {
+  e.preventDefault();
+  dropZone.classList.remove("drag-over");
+  handleFiles(e.dataTransfer.files);
+});
+
+fileInput.addEventListener("change", e => {
+  handleFiles(e.target.files);
+  fileInput.value = ""; // Reset so same file can be re-uploaded
+});
+
+function handleFiles(files) {
+  Array.from(files).forEach(file => uploadFile(file));
+}
+
+function addFileToUI(filename, status) {
+  // Check if already exists
+  const existing = state.uploadedFiles.find(f => f.filename === filename);
+  if (!existing) {
+    state.uploadedFiles.push({ filename, status });
+  }
+  renderFileList();
+}
+
+function renderFileList() {
+  const list = document.getElementById("file-list");
+  const count = document.getElementById("upload-count");
+
+  const done = state.uploadedFiles.filter(f => f.status === "done");
+  count.textContent = `${done.length} file${done.length !== 1 ? "s" : ""}`;
+  document.getElementById("stat-resumes").textContent = done.length;
+
+  list.innerHTML = state.uploadedFiles.map(f => {
+    const icons = { uploading: "⏳", done: "📄", error: "⚠️" };
+    const badges = { uploading: "UPLOADING...", done: "READY", error: "ERROR" };
+    return `
+      <div class="file-item ${f.status}">
+        <span class="file-icon">${icons[f.status]}</span>
+        <div class="file-info">
+          <div class="file-name">${f.filename}</div>
+          <div class="file-status">${f.status === "done" ? "Ready for analysis" : f.status === "uploading" ? "Uploading..." : "Upload failed"}</div>
+        </div>
+        <span class="file-badge ${f.status}">${badges[f.status]}</span>
+      </div>
+    `;
+  }).join("");
+}
+
+async function uploadFile(file) {
+  const filename = file.name;
+
+  // Validate extension
+  if (!filename.match(/\.(pdf|txt)$/i)) {
+    showToast(`${filename}: Only PDF and TXT files are supported`, "error");
+    return;
+  }
+
+  // Add to UI as uploading
+  addFileToUI(filename, "uploading");
+
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const res = await fetch(API + "/upload_resume", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+
+    if (data.status === "success") {
+      const f = state.uploadedFiles.find(f => f.filename === filename);
+      if (f) f.status = "done";
+      renderFileList();
+      showToast(`${filename} uploaded!`);
+    } else {
+      const f = state.uploadedFiles.find(f => f.filename === filename);
+      if (f) f.status = "error";
+      renderFileList();
+      showToast(`Upload failed: ${data.message}`, "error");
+    }
+  } catch (err) {
+    const f = state.uploadedFiles.find(f => f.filename === filename);
+    if (f) f.status = "error";
+    renderFileList();
+    showToast("Could not connect to API. Is Flask running?", "error");
+  }
+}
+
+async function clearUploads() {
+  try {
+    await apiDelete("/clear_uploads");
+    state.uploadedFiles = [];
+    renderFileList();
+    document.getElementById("stat-resumes").textContent = "0";
+    document.getElementById("results-placeholder").style.display = "flex";
+    document.getElementById("results-content").style.display = "none";
+    showToast("All files cleared");
+  } catch {
+    showToast("Could not connect to API", "error");
+  }
+}
+
+// ============================================================
+//  JOB DESCRIPTION
+// ============================================================
+const jdInput = document.getElementById("jd-input");
+const jdCount = document.getElementById("jd-char-count");
+
+jdInput.addEventListener("input", () => {
+  const n = jdInput.value.length;
+  jdCount.textContent = `${n} characters`;
+  jdCount.style.color = n < 50 ? "var(--red)" : n < 200 ? "var(--amber)" : "var(--green)";
+});
+
+// ============================================================
+//  SAMPLE DATA LOADERS
+// ============================================================
+const SAMPLE_JD = `Senior Machine Learning Engineer
+
+We are looking for a Senior ML Engineer to join our AI Platform team.
+
+Requirements (Must Have):
+- 4+ years of experience in Machine Learning or Data Science
+- Strong proficiency in Python
+- Hands-on experience with TensorFlow or PyTorch
+- Experience with scikit-learn, XGBoost, or LightGBM
+- Knowledge of NLP techniques and spaCy, NLTK, or Transformers
+- Experience with REST API development using FastAPI or Flask
+- Proficiency in SQL and PostgreSQL databases
+- Experience with Docker and Kubernetes
+- Familiarity with AWS, GCP, or Azure
+- Strong knowledge of Git and GitHub
+- Understanding of ML fundamentals: regression, classification, neural networks
+
+Nice to Have:
+- Apache Spark for big data processing
+- MLflow for experiment tracking
+- React or TypeScript for frontend integration
+- Computer vision experience with OpenCV
+- AWS Certified Machine Learning certification
+
+Responsibilities:
+- Design and implement ML models for production systems
+- Build scalable ML pipelines and data workflows
+- Deploy models using Docker, Kubernetes, and AWS
+- Conduct A/B testing and monitor model performance
+- Write clean, well-documented Python code
+- Collaborate in Agile/Scrum teams`;
+
+function loadSampleJD() {
+  jdInput.value = SAMPLE_JD;
+  jdInput.dispatchEvent(new Event("input"));
+  showToast("Sample job description loaded!");
+}
+
+async function loadSampleResume() {
+  // Create a blob from sample resume text and upload it
+  const SAMPLE_RESUME = `JOHN DOE - Senior Python Developer & ML Engineer
+
+SKILLS: Python, TensorFlow, PyTorch, scikit-learn, Keras, XGBoost
+NLP: spaCy, NLTK, Hugging Face Transformers, BERT
+Web: Flask, FastAPI, Django, REST API
+Databases: PostgreSQL, MongoDB, MySQL, Redis
+Cloud: AWS (EC2, S3, Lambda), Docker, Kubernetes
+Data: Pandas, NumPy, Matplotlib, Seaborn, Jupyter
+Tools: Git, GitHub, Jira, Agile, Scrum, MLflow, Apache Spark
+
+EXPERIENCE:
+Senior ML Engineer at TechCorp (2021-Present)
+- Designed ML models for fraud detection with 94% accuracy using XGBoost
+- Built NLP pipelines for sentiment analysis using BERT and Transformers
+- Developed REST APIs using FastAPI to serve ML models
+- Orchestrated model training using Kubernetes and Docker
+
+Data Scientist at DataDriven LLC (2019-2021)
+- Customer segmentation using K-Means clustering
+- Built recommendation systems using collaborative filtering
+- ETL pipelines processing 50GB+ daily data with Apache Spark
+- SQL and PostgreSQL for data warehousing
+
+EDUCATION:
+M.S. Computer Science (ML specialization) - Stanford University
+B.S. Computer Science - UC Berkeley
+
+CERTIFICATIONS:
+- AWS Certified Machine Learning Specialty
+- Google Professional Data Engineer
+- Deep Learning Specialization - Coursera`;
+
+  const blob = new Blob([SAMPLE_RESUME], { type: "text/plain" });
+  const file = new File([blob], "john_doe_sample.txt", { type: "text/plain" });
+  await uploadFile(file);
+}
+
+// ============================================================
+//  RANKING
+// ============================================================
+async function rankCandidates() {
+  const jd = jdInput.value.trim();
+
+  if (jd.length < 50) {
+    showToast("Please enter a longer job description (50+ chars)", "error");
+    return;
+  }
+
+  const readyFiles = state.uploadedFiles.filter(f => f.status === "done");
+  if (readyFiles.length === 0) {
+    showToast("Please upload at least one resume first", "error");
+    return;
+  }
+
+  // Show loading state
+  const btn = document.getElementById("rank-btn");
+  btn.disabled = true;
+  btn.classList.add("loading");
+
+  try {
+    const res = await apiPost("/rank_candidates", {
+      job_description: jd,
+      filenames: readyFiles.map(f => f.filename)
+    });
+
+    if (res.status === "success") {
+      renderResults(res.data);
+      showToast(`Ranked ${res.data.total_candidates} candidates!`);
+    } else {
+      showToast(res.message || "Ranking failed", "error");
+    }
+  } catch (err) {
+    showToast("Could not connect to API. Is Flask running on port 5000?", "error");
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove("loading");
+  }
+}
+
+// ============================================================
+//  RENDER RESULTS
+// ============================================================
+function renderResults(data) {
+  document.getElementById("results-placeholder").style.display = "none";
+  document.getElementById("results-content").style.display = "block";
+
+  const { ranked_candidates: candidates, job_description: jd } = data;
+
+  // ---- Summary Bar ----
+  const avgScore = candidates.length
+    ? (candidates.reduce((s, c) => s + c.score_percentage, 0) / candidates.length).toFixed(1)
+    : 0;
+  const topScore = candidates[0]?.score_percentage?.toFixed(1) || 0;
+  const excellent = candidates.filter(c => c.score >= 0.5).length;
+
+  document.getElementById("results-summary").innerHTML = `
+    <div class="summary-stat">
+      <div class="summary-num">${candidates.length}</div>
+      <div class="summary-label">Candidates</div>
+    </div>
+    <div class="summary-stat">
+      <div class="summary-num">${topScore}%</div>
+      <div class="summary-label">Top Score</div>
+    </div>
+    <div class="summary-stat">
+      <div class="summary-num">${avgScore}%</div>
+      <div class="summary-label">Avg Score</div>
+    </div>
+    <div class="summary-stat">
+      <div class="summary-num">${excellent}</div>
+      <div class="summary-label">Good+ Matches</div>
+    </div>
+    <div class="summary-stat">
+      <div class="summary-num">${jd.required_skills_count}</div>
+      <div class="summary-label">JD Skills</div>
+    </div>
+  `;
+
+  // ---- Candidate Cards ----
+  document.getElementById("candidates-grid").innerHTML = candidates.map((c, i) =>
+    renderCandidateCard(c, i)
+  ).join("");
+
+  // Animate bars
+  setTimeout(() => {
+    document.querySelectorAll(".score-bar-fill").forEach(bar => {
+      bar.style.width = bar.dataset.width + "%";
+    });
+  }, 100);
+}
+
+function getScoreClass(pct) {
+  if (pct >= 65) return "high";
+  if (pct >= 45) return "med";
+  if (pct >= 25) return "low-score";
+  return "poor";
+}
+
+function getMatchClass(label) {
+  if (label.includes("Excellent")) return "excellent";
+  if (label.includes("Good")) return "good";
+  if (label.includes("Partial")) return "partial";
+  return "low";
+}
+
+function getRankClass(rank) {
+  if (rank === 1) return "r1";
+  if (rank === 2) return "r2";
+  if (rank === 3) return "r3";
+  return "rn";
+}
+
+function renderCandidateCard(c, idx) {
+  const scoreClass = getScoreClass(c.score_percentage);
+  const matchClass = getMatchClass(c.match_label || "");
+  const rankClass = getRankClass(c.rank);
+  const cardClass = c.rank <= 2 ? `rank-${c.rank}` : "";
+
+  const matchingChips = (c.skill_gap?.matching || []).slice(0, 8)
+    .map(s => `<span class="skill-chip match">${s}</span>`).join("");
+  const missingChips = (c.skill_gap?.missing || []).slice(0, 8)
+    .map(s => `<span class="skill-chip miss">${s}</span>`).join("");
+  const extraChips = (c.skill_gap?.extra || []).slice(0, 5)
+    .map(s => `<span class="skill-chip extra">${s}</span>`).join("");
+
+  const gapPct = c.skill_gap?.match_percentage || 0;
+
+  return `
+    <div class="candidate-card ${cardClass}" id="card-${idx}" onclick="toggleCard(${idx})">
+      <div class="candidate-main">
+        <div class="rank-badge ${rankClass}">#${c.rank}</div>
+        <div>
+          <div class="candidate-name">${c.name}</div>
+          <div class="candidate-meta">
+            <span class="match-label ${matchClass}">${c.match_label || ""}</span>
+            <span class="skill-count-badge">⚡ ${(c.skills || []).length} skills found</span>
+            <span class="skill-count-badge">🎯 ${gapPct}% skill match</span>
+          </div>
+        </div>
+        <div class="score-block">
+          <div class="score-pct ${scoreClass}">${c.score_percentage}%</div>
+          <div class="score-label">RELEVANCE</div>
+        </div>
+      </div>
+
+      <div class="score-bar-wrap">
+        <div class="score-bar-bg">
+          <div class="score-bar-fill ${scoreClass}" data-width="${c.score_percentage}" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="expand-hint">Click to ${c.rank === 1 ? "collapse" : "expand"} skill gap analysis ↓</div>
+
+      <div class="skill-gap-section" ${idx === 0 ? 'style="display:block"' : ""}>
+        <div class="gap-match-pct">Skill Match: ${gapPct}% of required skills present</div>
+        <div class="skill-gap-grid">
+          <div>
+            <div class="skill-group-title matching">✅ Matching Skills (${(c.skill_gap?.matching || []).length})</div>
+            <div class="skill-chips">${matchingChips || '<span style="color:var(--text-muted);font-size:11px;font-family:var(--font-mono)">None detected</span>'}</div>
+          </div>
+          <div>
+            <div class="skill-group-title missing">❌ Missing Skills (${(c.skill_gap?.missing || []).length})</div>
+            <div class="skill-chips">${missingChips || '<span style="color:var(--text-muted);font-size:11px;font-family:var(--font-mono)">None — full match!</span>'}</div>
+          </div>
+        </div>
+        ${extraChips ? `
+        <div style="margin-top:16px;">
+          <div class="skill-group-title extra">🌟 Additional Skills (${(c.skill_gap?.extra || []).length})</div>
+          <div class="skill-chips">${extraChips}</div>
+        </div>` : ""}
+      </div>
+    </div>
+  `;
+}
+
+function toggleCard(idx) {
+  const card = document.getElementById(`card-${idx}`);
+  card.classList.toggle("expanded");
+}
+
+// ============================================================
+//  INIT — Check API status & load existing uploads
+// ============================================================
+async function init() {
+  try {
+    const res = await fetch(API + "/list_uploads");
+    const data = await res.json();
+    if (data.status === "success") {
+      data.data.files.forEach(f => {
+        state.uploadedFiles.push({ filename: f.filename, status: "done" });
+      });
+      renderFileList();
+      document.getElementById("header-status-text").textContent = "API Connected";
+    }
+  } catch {
+    document.getElementById("header-status-text").textContent = "API Offline";
+    document.querySelector(".status-dot").style.background = "var(--red)";
+  }
+}
+
+init();
+</script>
+
+</body>
+</html>

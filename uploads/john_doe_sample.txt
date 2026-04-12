@@ -1,0 +1,31 @@
+JOHN DOE - Senior Python Developer & ML Engineer
+
+SKILLS: Python, TensorFlow, PyTorch, scikit-learn, Keras, XGBoost
+NLP: spaCy, NLTK, Hugging Face Transformers, BERT
+Web: Flask, FastAPI, Django, REST API
+Databases: PostgreSQL, MongoDB, MySQL, Redis
+Cloud: AWS (EC2, S3, Lambda), Docker, Kubernetes
+Data: Pandas, NumPy, Matplotlib, Seaborn, Jupyter
+Tools: Git, GitHub, Jira, Agile, Scrum, MLflow, Apache Spark
+
+EXPERIENCE:
+Senior ML Engineer at TechCorp (2021-Present)
+- Designed ML models for fraud detection with 94% accuracy using XGBoost
+- Built NLP pipelines for sentiment analysis using BERT and Transformers
+- Developed REST APIs using FastAPI to serve ML models
+- Orchestrated model training using Kubernetes and Docker
+
+Data Scientist at DataDriven LLC (2019-2021)
+- Customer segmentation using K-Means clustering
+- Built recommendation systems using collaborative filtering
+- ETL pipelines processing 50GB+ daily data with Apache Spark
+- SQL and PostgreSQL for data warehousing
+
+EDUCATION:
+M.S. Computer Science (ML specialization) - Stanford University
+B.S. Computer Science - UC Berkeley
+
+CERTIFICATIONS:
+- AWS Certified Machine Learning Specialty
+- Google Professional Data Engineer
+- Deep Learning Specialization - Coursera

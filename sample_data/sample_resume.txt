@@ -1,0 +1,84 @@
+JOHN DOE
+Senior Python Developer & ML Engineer
+Email: john.doe@email.com | Phone: +1-555-0123
+LinkedIn: linkedin.com/in/johndoe | GitHub: github.com/johndoe
+Location: San Francisco, CA
+
+==================================================
+PROFESSIONAL SUMMARY
+==================================================
+Experienced Python Developer with 5+ years of expertise in Machine Learning,
+Deep Learning, and Data Science. Proven track record of building scalable
+ML pipelines and REST APIs. Passionate about solving complex problems with
+data-driven solutions.
+
+==================================================
+TECHNICAL SKILLS
+==================================================
+Programming Languages: Python, SQL, JavaScript, Bash
+ML/AI Frameworks:      TensorFlow, PyTorch, Scikit-learn, Keras, XGBoost
+Data Science Tools:    Pandas, NumPy, Matplotlib, Seaborn, Jupyter
+NLP:                   spaCy, NLTK, Hugging Face Transformers, BERT
+Web Frameworks:        Flask, FastAPI, Django
+Databases:             PostgreSQL, MongoDB, MySQL, Redis
+Cloud & DevOps:        AWS (EC2, S3, Lambda), Docker, Kubernetes, Git, CI/CD
+Visualization:         Tableau, Power BI, Plotly
+
+==================================================
+PROFESSIONAL EXPERIENCE
+==================================================
+
+SENIOR ML ENGINEER | TechCorp Inc. | 2021 - Present
+- Designed and deployed machine learning models for fraud detection
+  achieving 94% accuracy using Random Forest and XGBoost
+- Built NLP pipelines for sentiment analysis on 10M+ customer reviews
+  using BERT and Hugging Face Transformers
+- Developed REST APIs using FastAPI to serve ML models at scale (10k req/s)
+- Orchestrated model training workflows using Kubernetes and Docker
+- Implemented MLflow for experiment tracking and model versioning
+- Collaborated in Agile/Scrum teams using Jira and Confluence
+
+DATA SCIENTIST | DataDriven LLC | 2019 - 2021
+- Performed customer segmentation using K-Means clustering and PCA
+- Built recommendation systems using collaborative filtering
+- Created interactive dashboards using Tableau and Plotly
+- Wrote ETL pipelines to process 50GB+ daily data with Apache Spark
+- Used SQL and PostgreSQL for data warehousing and analysis
+
+PYTHON DEVELOPER | StartupXYZ | 2018 - 2019
+- Developed backend APIs using Flask and Django
+- Worked with MySQL and MongoDB databases
+- Implemented authentication using JWT and OAuth
+- Used Git and GitHub for version control
+
+==================================================
+EDUCATION
+==================================================
+M.S. Computer Science (Machine Learning specialization)
+Stanford University | 2016 - 2018
+
+B.S. Computer Science
+University of California, Berkeley | 2012 - 2016
+
+==================================================
+PROJECTS
+==================================================
+
+Resume Screener (Personal Project)
+- Built an NLP-based resume screening system using Python, spaCy, and TF-IDF
+- Achieved 87% accuracy in matching resumes to job descriptions
+- Stack: Python, Flask, scikit-learn, spaCy, React
+
+Real-time Stock Predictor
+- LSTM neural network for stock price prediction using TensorFlow
+- REST API deployed on AWS Lambda with Docker
+
+Open Source Contributions
+- Contributed to scikit-learn and Pandas repositories on GitHub
+
+==================================================
+CERTIFICATIONS
+==================================================
+- AWS Certified Machine Learning - Specialty (2022)
+- Google Professional Data Engineer (2021)
+- Deep Learning Specialization - Coursera/deeplearning.ai (2020)
