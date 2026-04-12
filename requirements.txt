@@ -1,30 +1,4 @@
-# ============================================================
-# requirements.txt — All Python packages needed for this project
-# ============================================================
-# Install all with: pip install -r requirements.txt
-
-# --- Web Framework ---
-flask==3.0.0                   # Lightweight Python web framework for our API
-flask-cors==4.0.0              # Allows our HTML frontend to call the Flask API
-
-# --- NLP Libraries ---
-spacy==3.7.2                   # Advanced NLP: tokenization, NER, lemmatization
-nltk==3.8.1                    # Natural Language Toolkit: stopwords, tokenizers
-
-# --- Machine Learning ---
-scikit-learn==1.4.0            # TF-IDF, cosine similarity, vectorizers
-
-# --- PDF Parsing ---
-pdfplumber==0.10.3             # Extract text from PDF files cleanly
-
-# --- Data Handling ---
-numpy==1.26.3                  # Numerical operations
-pandas==2.1.4                  # Data manipulation (for CSV dataset)
-
-# --- Utilities ---
-werkzeug==3.0.1                # File upload handling (used by Flask)
-python-dotenv==1.0.0           # Load environment variables from .env file
-
-# --- Jupyter (for notebook) ---
-jupyter==1.0.0                 # Jupyter notebook environment
-ipykernel==6.28.0              # Jupyter kernel
+streamlit
+pandas
+numpy
+scikit-learn
