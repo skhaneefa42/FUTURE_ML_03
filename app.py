@@ -6,31 +6,21 @@ All features: Resume ranking, skill extraction, skill gap analysis, visualizatio
 import streamlit as st
 import pandas as pd
 import numpy as np
-import seaborn as sns
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import re
 import nltk
-from nltk.corpus import stopwords
 from PyPDF2 import PdfReader
 import io
 import os
 from datetime import datetime
 
 # Download required NLTK data
-@st.cache_resource
-def download_nltk_data():
-    """Download required NLTK datasets"""
-    try:
-        nltk.data.find('tokenizers/punkt')
-    except LookupError:
-        nltk.download('punkt')
-    try:
-        nltk.data.find('corpora/stopwords')
-    except LookupError:
-        nltk.download('stopwords')
-
-download_nltk_data()
+def clean_text(text):
+    text = text.lower()
+    text = re.sub(r'[^a-zA-Z ]', '', text)
+    words = text.split()
+    return " ".join(words)
 
 # ==================== TEXT PREPROCESSOR ====================
 class TextPreprocessor:
