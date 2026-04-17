@@ -9,7 +9,6 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import re
-import nltk
 from PyPDF2 import PdfReader
 import io
 import os
