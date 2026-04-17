@@ -12,6 +12,8 @@ import re
 from PyPDF2 import PdfReader
 import io
 import os
+import matplotlib.pyplot as plt
+
 from datetime import datetime
 
 # Download required NLTK data
