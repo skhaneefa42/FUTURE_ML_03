@@ -26,11 +26,14 @@ class TextPreprocessor:
     """Handles text cleaning and preprocessing"""
     
     def __init__(self):
-        self.stop_words = set(stopwords.words('english'))
-        # Add custom stopwords
-        custom_stopwords = {'experience', 'skills', 'work', 'job', 'role', 
-                           'candidate', 'year', 'years', 'using', 'including'}
-        self.stop_words.update(custom_stopwords)
+        self.stop_words = {
+    "the","is","in","and","to","of","a","for","on","with",
+    "as","by","an","be","this","that","from","at","or",
+    "experience","skills","work","job","role",
+    "candidate","year","years","using","including"
+}
+      
+    
     
     def clean_text(self, text):
         """Basic text cleaning"""
