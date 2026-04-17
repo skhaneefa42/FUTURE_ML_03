@@ -1,11 +1,8 @@
-streamlit
-flask
-flask-cors
-scikit-learn
-pandas
-numpy
-nltk
-spacy
-pdfplumbergit add .
-git commit -m "advanced resume screener"
-git push
+streamlit==1.29.0
+pandas==2.1.4
+numpy==1.24.3
+scikit-learn==1.3.2
+nltk==3.8.1
+PyPDF2==3.0.1
+matplotlib==3.8.2
+seaborn==0.13.1
